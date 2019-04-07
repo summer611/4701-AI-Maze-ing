@@ -11,10 +11,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Random;
 
 
 public class Game implements Serializable{
@@ -29,7 +27,7 @@ public class Game implements Serializable{
     Position AI;
     Position cur;
     Position door;
-    List<Position> route;
+    List<Character> route;
     int seed;
     int level=1;
     TERenderer ter;
@@ -38,28 +36,30 @@ public class Game implements Serializable{
         Position position;
         Node prev;
         int numSteps;
+        char move;
 
-        Node(Position p, Node pre, int n){
+        Node(Position p, Node pre, int n, char mv){
             position = p;
             prev = pre;
             numSteps = n;
+            move = mv;
         }
 
         int priority(){
-            double distance = Math.pow(position.Px - door.Px, 2) + Math.pow(position.Py - door.Py, 2);
+            double distance = Math.abs(position.Px - door.Px) + Math.abs(position.Py - door.Py);
             return (int)(Math.pow(distance, 0.5) + numSteps);
         }
 
         List<Node> neighbors(){
             List<Node> result = new ArrayList<>();
             if(this.position.left(worldP).Tile != Tileset.WALL)
-                result.add(new Node(position.left(worldP), this, numSteps + 1));
+                result.add(new Node(position.left(worldP), this, numSteps + 1, 'a'));
             if(this.position.right(worldP).Tile != Tileset.WALL)
-                result.add(new Node(position.right(worldP), this, numSteps + 1));
+                result.add(new Node(position.right(worldP), this, numSteps + 1, 'd'));
             if(this.position.up(worldP).Tile != Tileset.WALL)
-                result.add(new Node(position.up(worldP), this, numSteps + 1));
+                result.add(new Node(position.up(worldP), this, numSteps + 1, 'w'));
             if(this.position.down(worldP).Tile != Tileset.WALL)
-                result.add(new Node(position.down(worldP), this, numSteps + 1));
+                result.add(new Node(position.down(worldP), this, numSteps + 1, 's'));
             return result;
         }
 
@@ -69,16 +69,29 @@ public class Game implements Serializable{
     }
 
     public void findRoute(){
-        Node start = new Node(AI, null, 0);
+        List<Position> visited = new ArrayList<>();
+        route = new LinkedList<>();
+        Node start = new Node(AI, null, 0, '0');
         Node pointer = start;
         PriorityQueue<Node> pq = new PriorityQueue<>((n1, n2) -> n1.priority()-n2.priority());
         while (!pointer.isExit()){
             for(Node neighb : pointer.neighbors()){
-                if(pointer.prev == null || !pointer.prev.position.equals(neighb.position)){
-
+                if((pointer.prev == null || !pointer.prev.position.equals(neighb.position)) && !visited.contains(neighb.position)){
+                    pq.add(neighb);
+                    visited.add(neighb.position);
                 }
             }
+            pointer = pq.poll();
+            System.out.println(pointer.numSteps + " " + pointer.move + " " + pointer.prev.numSteps);
         }
+        int i = 1;
+        while(pointer != null){
+            System.out.println("step " + i++ + pointer.move);
+            route.add(pointer.move);
+            pointer = pointer.prev;
+        }
+        System.out.println(route.size());
+        Collections.reverse(route);
     }
 
     public TETile[][] genWorld(int seed) {
@@ -98,6 +111,7 @@ public class Game implements Serializable{
         player=Position.addPlayer(worldP,random);
         AI = Position.addAI(worldP,random);
         cur = AI;
+        findRoute();
         //ter.renderFrame(world);
         //moveCharacter();
         return world;
@@ -166,6 +180,15 @@ public class Game implements Serializable{
     }
 
 //    public void moveRandom(){
+
+    //        }
+//            nextMove = move[rand];
+//            int rand = random.nextInt(4);
+//                || nextMove == 's' && AI.down(worldP).Tile.equals(Tileset.WALL)){
+//                || nextMove == 'w' && AI.up(worldP).Tile.equals(Tileset.WALL)
+//                || nextMove == 'd' && AI.right(worldP).Tile.equals(Tileset.WALL)
+//        while(nextMove == 'a' && AI.left(worldP).Tile.equals(Tileset.WALL)
+//        System.out.println(cur.Px + ", " + cur.Py);
 //        Random random = new Random();
 //        char[] move = new char[]{'a', 's', 'd', 'w'};
 //        int rand = random.nextInt(4);
@@ -216,70 +239,93 @@ public class Game implements Serializable{
 //        }
 //    }
     public void moveAI(){
-        Random random = new Random();
-        char[] move = new char[]{'a', 's', 'd', 'w'};
-        double[] distances = new double[4];
-        int minIndex = 0;
-        distances[0] = Math.pow((cur.Px-1) - door.Px, 2) + Math.pow(cur.Py - door.Py, 2);
-        distances[1] = Math.pow(cur.Px - door.Px, 2) + Math.pow((cur.Py-1) - door.Py, 2);
-        distances[2] = Math.pow((cur.Px+1) - door.Px, 2) + Math.pow(cur.Py - door.Py, 2);
-        distances[3] = Math.pow(cur.Px - door.Px, 2) + Math.pow((cur.Py +1) - door.Py, 2);
-        for (int i = 0; i<4; i++){
-            if(distances[i] < distances[minIndex]){
-                minIndex = i;
-            }
-        }
-        char nextMove = move[minIndex];
-        System.out.println(cur.Px + ", " + cur.Py);
-        while(nextMove == 'a' && AI.left(worldP).Tile.equals(Tileset.WALL)
-                || nextMove == 'd' && AI.right(worldP).Tile.equals(Tileset.WALL)
-                || nextMove == 'w' && AI.up(worldP).Tile.equals(Tileset.WALL)
-                || nextMove == 's' && AI.down(worldP).Tile.equals(Tileset.WALL)){
-            int rand = random.nextInt(4);
-            nextMove = move[rand];
-        }
-
-        if (nextMove == 'a' && (AI.left(worldP).Tile.equals(Tileset.FLOOR)||AI.left(worldP).Tile.equals(Tileset.PLAYER))) {
-            AI.left(worldP).setTile(Tileset.FLOWER);
-            AI.setTile(Tileset.FLOOR);
-            AI = AI.left(worldP);
-            cur = cur.left(worldP);
-        }
-        if (nextMove == 'd' && (AI.right(worldP).Tile.equals(Tileset.FLOOR)||AI.right(worldP).Tile.equals(Tileset.PLAYER))) {
-            AI.right(worldP).setTile(Tileset.FLOWER);
-            AI.setTile(Tileset.FLOOR);
-            AI = AI.right(worldP);
-            cur = cur.right(worldP);
-        }
-        if (nextMove == 'w' && (AI.up(worldP).Tile.equals(Tileset.FLOOR) || AI.up(worldP).Tile.equals(Tileset.PLAYER))) {
-            AI.up(worldP).setTile(Tileset.FLOWER);
-            AI.setTile(Tileset.FLOOR);
-            AI = AI.up(worldP);
-            cur = cur.up(worldP);
-        }
-        if (nextMove == 's' && (AI.down(worldP).Tile.equals(Tileset.FLOOR) || AI.down(worldP).Tile.equals(Tileset.PLAYER))) {
-            AI.down(worldP).setTile(Tileset.FLOWER);
-            AI.setTile(Tileset.FLOOR);
-            AI = AI.down(worldP);
-            cur = cur.down(worldP);
-        }
-        if (nextMove == 'a' && (AI.left(worldP).Tile.equals(Tileset.LOCKED_DOOR) || AI.left(worldP).Tile.equals(Tileset.PLAYER))) {
-            this.drawWin(AI.left(worldP),  seed + ++level);
-            return;
-        }
-        if (nextMove == 'd' && AI.right(worldP).Tile.equals(Tileset.LOCKED_DOOR)) {
-            this.drawWin(AI.right(worldP),  seed + ++level);
-            return;
-        }
-        if (nextMove == 's' && AI.down(worldP).Tile.equals(Tileset.LOCKED_DOOR)) {
-            this.drawWin(AI.down(worldP), seed + ++level);
-            return;
-        }
-        if (nextMove == 'w' && AI.up(worldP).Tile.equals(Tileset.LOCKED_DOOR)) {
-            this.drawWin(AI.up(worldP),seed + ++level);
-            return;
-        }
+//        Random random = new Random();
+//        char[] move = new char[]{'a', 's', 'd', 'w'};
+//        double[] distances = new double[4];
+//        int minIndex = 0;
+//        distances[0] = Math.pow((cur.Px-1) - door.Px, 2) + Math.pow(cur.Py - door.Py, 2);
+//        distances[1] = Math.pow(cur.Px - door.Px, 2) + Math.pow((cur.Py-1) - door.Py, 2);
+//        distances[2] = Math.pow((cur.Px+1) - door.Px, 2) + Math.pow(cur.Py - door.Py, 2);
+//        distances[3] = Math.pow(cur.Px - door.Px, 2) + Math.pow((cur.Py +1) - door.Py, 2);
+//        for (int i = 0; i<4; i++){
+//            if(distances[i] < distances[minIndex]){
+//                minIndex = i;
+//            }
+//        }
+//        char nextMove = move[minIndex];
+       if(route.isEmpty()){
+           this.drawWin(AI.down(worldP), seed + ++level);
+           return;
+       }
+    char nextMove = route.remove(0);
+    if (nextMove == 'a') {
+        AI.left(worldP).setTile(Tileset.FLOWER);
+        AI.setTile(Tileset.FLOOR);
+        AI = AI.left(worldP);
+        cur = cur.left(worldP);
     }
+    if (nextMove == 'd') {
+        AI.right(worldP).setTile(Tileset.FLOWER);
+        AI.setTile(Tileset.FLOOR);
+        AI = AI.right(worldP);
+        cur = cur.right(worldP);
+    }
+    if (nextMove == 'w') {
+        AI.up(worldP).setTile(Tileset.FLOWER);
+        AI.setTile(Tileset.FLOOR);
+        AI = AI.up(worldP);
+        cur = cur.up(worldP);
+    }
+    if (nextMove == 's') {
+        AI.down(worldP).setTile(Tileset.FLOWER);
+        AI.setTile(Tileset.FLOOR);
+        AI = AI.down(worldP);
+        cur = cur.down(worldP);
+    }
+
+//        if (nextMove == 'a' && (AI.left(worldP).Tile.equals(Tileset.FLOOR)||AI.left(worldP).Tile.equals(Tileset.PLAYER))) {
+//            AI.left(worldP).setTile(Tileset.FLOWER);
+//            AI.setTile(Tileset.FLOOR);
+//            AI = AI.left(worldP);
+//            cur = cur.left(worldP);
+//        }
+//        if (nextMove == 'd' && (AI.right(worldP).Tile.equals(Tileset.FLOOR)||AI.right(worldP).Tile.equals(Tileset.PLAYER))) {
+//            AI.right(worldP).setTile(Tileset.FLOWER);
+//            AI.setTile(Tileset.FLOOR);
+//            AI = AI.right(worldP);
+//            cur = cur.right(worldP);
+//        }
+//        if (nextMove == 'w' && (AI.up(worldP).Tile.equals(Tileset.FLOOR) || AI.up(worldP).Tile.equals(Tileset.PLAYER))) {
+//            AI.up(worldP).setTile(Tileset.FLOWER);
+//            AI.setTile(Tileset.FLOOR);
+//            AI = AI.up(worldP);
+//            cur = cur.up(worldP);
+//        }
+//        if (nextMove == 's' && (AI.down(worldP).Tile.equals(Tileset.FLOOR) || AI.down(worldP).Tile.equals(Tileset.PLAYER))) {
+//            AI.down(worldP).setTile(Tileset.FLOWER);
+//            AI.setTile(Tileset.FLOOR);
+//            AI = AI.down(worldP);
+//            cur = cur.down(worldP);
+//        }
+//        if (nextMove == 'a' && (AI.left(worldP).Tile.equals(Tileset.LOCKED_DOOR) || AI.left(worldP).Tile.equals(Tileset.PLAYER))) {
+//            this.drawWin(AI.left(worldP),  seed + ++level);
+//            return;
+//        }
+//        if (nextMove == 'd' && AI.right(worldP).Tile.equals(Tileset.LOCKED_DOOR)) {
+//            this.drawWin(AI.right(worldP),  seed + ++level);
+//            return;
+//        }
+//        if (nextMove == 's' && AI.down(worldP).Tile.equals(Tileset.LOCKED_DOOR)) {
+//            this.drawWin(AI.down(worldP), seed + ++level);
+//            return;
+//        }
+//        if (nextMove == 'w' && AI.up(worldP).Tile.equals(Tileset.LOCKED_DOOR)) {
+//            this.drawWin(AI.up(worldP),seed + ++level);
+//            return;
+//        }
+    }
+
+
 
     public void movePlayer(char nextMove){
         if (nextMove == 'a' && player.left(worldP).Tile.equals(Tileset.FLOOR)) {
