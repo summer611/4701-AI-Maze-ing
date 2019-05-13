@@ -396,12 +396,13 @@ public class Game implements Serializable{
         Font font = new Font("Monaco", Font.BOLD, 40);
         StdDraw.setFont(font);
         StdDraw.setPenColor(Color.white);
-        StdDraw.text(0.5, 0.7, "Game: My World");
+        StdDraw.text(0.5, 0.7, "Game: AI-MAZE-ING");
         Font smallFont = new Font("Monaco", Font.BOLD, 20);
         StdDraw.setFont(smallFont);
         StdDraw.text(0.5, 0.45, "New Game(N)");
         StdDraw.text(0.5, 0.4, "Load Game(L)");
-        StdDraw.text(0.5, 0.35, "Quit(Q)");
+        StdDraw.text(0.5, 0.35, "Game Rule(R)");
+        StdDraw.text(0.5, 0.30, "Quit(Q)");
         StdDraw.show();
     }
     public void playWithKeyboard() {
@@ -444,6 +445,24 @@ public class Game implements Serializable{
                     catch (Exception e){
                         System.out.println("Couldn't load "+e.getMessage());
                     }
+                }
+                if(nextKey=='r'||nextKey=='R'){
+                    StdDraw.setCanvasSize(40 * 16, 40 * 16);
+                    StdDraw.clear(Color.black);
+                    Font font = new Font("Monaco", Font.BOLD, 35);
+                    StdDraw.setFont(font);
+                    StdDraw.setPenColor(Color.white);
+                    StdDraw.text(0.5, 0.7, "Game Rule:");
+                    Font smallFont = new Font("Monaco", Font.BOLD, 12);
+                    StdDraw.setFont(smallFont);
+                    StdDraw.text(0.5, 0.55, "(1) You'll play against an AI player, and the player " +
+                            "with the higher points wins.");
+                    StdDraw.text(0.5, 0.5, "(2) Use 'AWSD' to control your direction in the maze. ");
+                    StdDraw.text(0.5, 0.45, "(3) You earn 5 points when getting a coin");
+                    StdDraw.text(0.5, 0.40,  "(4) You get 3 points deducted when falling into the trap.");
+                    StdDraw.text(0.5, 0.35, "(5) Once arriving at the exit, you must wait until another player" +
+                            "get to the exit.");
+
                 }
                 if(nextKey=='Q'||nextKey=='q'){
                     return;
