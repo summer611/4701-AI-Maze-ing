@@ -468,17 +468,16 @@ public class Game implements Serializable {
                     StdDraw.setCanvasSize(40 * 16, 40 * 16);
                     StdDraw.clear(Color.black);
                     StdDraw.setPenColor(Color.white);
-                    Font font = new Font("Monaco", Font.BOLD, 30);
+                    Font font = new Font("Monaco", Font.BOLD, 35);
                     StdDraw.setFont(font);
                     StdDraw.text(0.5, 0.75, "Basic Mode V.S Advanced Mode");
-                    Font smallFont2 = new Font("Monaco", Font.BOLD, 14);
+                    Font smallFont2 = new Font("Monaco", Font.BOLD, 16);
                     StdDraw.setFont(smallFont2);
                     StdDraw.text(0.5, 0.50, "Basic Mode: The player who gets to the exit first wins.");
                     StdDraw.text(0.5, 0.45, "Advanced Mode: The player who gets the higher points wins.");
-                    StdDraw.text(0.5, 0.40, "You earn 5 points when getting a coin.");
-                    StdDraw.text(0.5, 0.35, "You get 3 points deducted when falling into the trap.");
-                    StdDraw.text(0.5, 0.30, "Once arriving at the exit, the player must wait until another player" +
-                            "get to the exit.");
+                    StdDraw.text(0.5, 0.40, "You earn 10 points when getting a coin.");
+                    StdDraw.text(0.5, 0.35, "You lose 20 points when falling into the trap.");
+                    StdDraw.text(0.5, 0.30, "When both players get to the exit, show the winner and enter next level");
                     StdDraw.setPenColor(Color.yellow);
                     Font insFont = new Font("Monaco", Font.BOLD, 14);
                     StdDraw.text(0.5, 0.25, "Type 'B' to enter Basic Mode and 'A' to advanced Mode " +
