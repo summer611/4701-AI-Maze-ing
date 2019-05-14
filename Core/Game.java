@@ -179,84 +179,7 @@ public class Game implements Serializable{
 
     }
 
-//    public void moveRandom(){
-
-    //        }
-//            nextMove = move[rand];
-//            int rand = random.nextInt(4);
-//                || nextMove == 's' && AI.down(worldP).Tile.equals(Tileset.WALL)){
-//                || nextMove == 'w' && AI.up(worldP).Tile.equals(Tileset.WALL)
-//                || nextMove == 'd' && AI.right(worldP).Tile.equals(Tileset.WALL)
-//        while(nextMove == 'a' && AI.left(worldP).Tile.equals(Tileset.WALL)
-//        System.out.println(cur.Px + ", " + cur.Py);
-//        Random random = new Random();
-//        char[] move = new char[]{'a', 's', 'd', 'w'};
-//        int rand = random.nextInt(4);
-//        char nextMove = move[rand];
-//        while(nextMove == 'a' && AI.left(worldP).Tile.equals(Tileset.WALL)
-//        || nextMove == 'd' && AI.right(worldP).Tile.equals(Tileset.WALL)
-//        || nextMove == 'w' && AI.up(worldP).Tile.equals(Tileset.WALL)
-//        || nextMove == 's' && AI.down(worldP).Tile.equals(Tileset.WALL)){
-//            rand = random.nextInt(4);
-//            nextMove = move[rand];
-//        }
-//
-//        if (nextMove == 'a' && AI.left(worldP).Tile.equals(Tileset.FLOOR)) {
-//            AI.left(worldP).setTile(Tileset.FLOWER);
-//            AI.setTile(Tileset.FLOOR);
-//            AI = AI.left(worldP);
-//        }
-//        if (nextMove == 'd' && AI.right(worldP).Tile.equals(Tileset.FLOOR)) {
-//            AI.right(worldP).setTile(Tileset.FLOWER);
-//            AI.setTile(Tileset.FLOOR);
-//            AI = AI.right(worldP);
-//        }
-//        if (nextMove == 'w' && AI.up(worldP).Tile.equals(Tileset.FLOOR)) {
-//            AI.up(worldP).setTile(Tileset.FLOWER);
-//            AI.setTile(Tileset.FLOOR);
-//            AI = AI.up(worldP);
-//        }
-//        if (nextMove == 's' && AI.down(worldP).Tile.equals(Tileset.FLOOR)) {
-//            AI.down(worldP).setTile(Tileset.FLOWER);
-//            AI.setTile(Tileset.FLOOR);
-//            AI = AI.down(worldP);
-//        }
-//        if (nextMove == 'a' && AI.left(worldP).Tile.equals(Tileset.LOCKED_DOOR)) {
-//            this.drawWin(AI.left(worldP),  seed + ++level);
-//            return;
-//        }
-//        if (nextMove == 'd' && AI.right(worldP).Tile.equals(Tileset.LOCKED_DOOR)) {
-//            this.drawWin(AI.right(worldP),  seed + ++level);
-//            return;
-//        }
-//        if (nextMove == 's' && AI.down(worldP).Tile.equals(Tileset.LOCKED_DOOR)) {
-//            this.drawWin(AI.down(worldP), seed + ++level);
-//            return;
-//        }
-//        if (nextMove == 'w' && AI.up(worldP).Tile.equals(Tileset.LOCKED_DOOR)) {
-//            this.drawWin(AI.up(worldP),seed + ++level);
-//            return;
-//        }
-//    }
     public void moveAI(){
-//        Random random = new Random();
-//        char[] move = new char[]{'a', 's', 'd', 'w'};
-//        double[] distances = new double[4];
-//        int minIndex = 0;
-//        distances[0] = Math.pow((cur.Px-1) - door.Px, 2) + Math.pow(cur.Py - door.Py, 2);
-//        distances[1] = Math.pow(cur.Px - door.Px, 2) + Math.pow((cur.Py-1) - door.Py, 2);
-//        distances[2] = Math.pow((cur.Px+1) - door.Px, 2) + Math.pow(cur.Py - door.Py, 2);
-//        distances[3] = Math.pow(cur.Px - door.Px, 2) + Math.pow((cur.Py +1) - door.Py, 2);
-//        for (int i = 0; i<4; i++){
-//            if(distances[i] < distances[minIndex]){
-//                minIndex = i;
-//            }
-//        }
-//        char nextMove = move[minIndex];
-       if(route.isEmpty()){
-           this.drawWin(AI.down(worldP), seed + ++level);
-           return;
-       }
     char nextMove = route.remove(0);
     if (nextMove == 'a') {
         AI.left(worldP).setTile(Tileset.FLOWER);
@@ -282,47 +205,11 @@ public class Game implements Serializable{
         AI = AI.down(worldP);
         cur = cur.down(worldP);
     }
+    if(route.isEmpty()){
+        this.drawWin(AI.down(worldP), seed + ++level, AI);
+        return;
+    }
 
-//        if (nextMove == 'a' && (AI.left(worldP).Tile.equals(Tileset.FLOOR)||AI.left(worldP).Tile.equals(Tileset.PLAYER))) {
-//            AI.left(worldP).setTile(Tileset.FLOWER);
-//            AI.setTile(Tileset.FLOOR);
-//            AI = AI.left(worldP);
-//            cur = cur.left(worldP);
-//        }
-//        if (nextMove == 'd' && (AI.right(worldP).Tile.equals(Tileset.FLOOR)||AI.right(worldP).Tile.equals(Tileset.PLAYER))) {
-//            AI.right(worldP).setTile(Tileset.FLOWER);
-//            AI.setTile(Tileset.FLOOR);
-//            AI = AI.right(worldP);
-//            cur = cur.right(worldP);
-//        }
-//        if (nextMove == 'w' && (AI.up(worldP).Tile.equals(Tileset.FLOOR) || AI.up(worldP).Tile.equals(Tileset.PLAYER))) {
-//            AI.up(worldP).setTile(Tileset.FLOWER);
-//            AI.setTile(Tileset.FLOOR);
-//            AI = AI.up(worldP);
-//            cur = cur.up(worldP);
-//        }
-//        if (nextMove == 's' && (AI.down(worldP).Tile.equals(Tileset.FLOOR) || AI.down(worldP).Tile.equals(Tileset.PLAYER))) {
-//            AI.down(worldP).setTile(Tileset.FLOWER);
-//            AI.setTile(Tileset.FLOOR);
-//            AI = AI.down(worldP);
-//            cur = cur.down(worldP);
-//        }
-//        if (nextMove == 'a' && (AI.left(worldP).Tile.equals(Tileset.LOCKED_DOOR) || AI.left(worldP).Tile.equals(Tileset.PLAYER))) {
-//            this.drawWin(AI.left(worldP),  seed + ++level);
-//            return;
-//        }
-//        if (nextMove == 'd' && AI.right(worldP).Tile.equals(Tileset.LOCKED_DOOR)) {
-//            this.drawWin(AI.right(worldP),  seed + ++level);
-//            return;
-//        }
-//        if (nextMove == 's' && AI.down(worldP).Tile.equals(Tileset.LOCKED_DOOR)) {
-//            this.drawWin(AI.down(worldP), seed + ++level);
-//            return;
-//        }
-//        if (nextMove == 'w' && AI.up(worldP).Tile.equals(Tileset.LOCKED_DOOR)) {
-//            this.drawWin(AI.up(worldP),seed + ++level);
-//            return;
-//        }
     }
 
 
@@ -349,40 +236,49 @@ public class Game implements Serializable{
             player = player.down(worldP);
         }
         if (nextMove == 'a' && player.left(worldP).Tile.equals(Tileset.LOCKED_DOOR)) {
-            this.drawWin(player.left(worldP),  seed + ++level);
+            this.drawWin(player.left(worldP),  seed + ++level, player);
             return;
         }
         if (nextMove == 'd' && player.right(worldP).Tile.equals(Tileset.LOCKED_DOOR)) {
-            this.drawWin(player.right(worldP),  seed + ++level);
+            this.drawWin(player.right(worldP),  seed + ++level,player);
             return;
         }
         if (nextMove == 's' && player.down(worldP).Tile.equals(Tileset.LOCKED_DOOR)) {
-            this.drawWin(player.down(worldP), seed + ++level);
+            this.drawWin(player.down(worldP), seed + ++level,player);
             return;
         }
         if (nextMove == 'w' && player.up(worldP).Tile.equals(Tileset.LOCKED_DOOR)) {
-            this.drawWin(player.up(worldP),seed + ++level);
+            this.drawWin(player.up(worldP),seed + ++level,player);
             return;
         }
     }
 
-    public void drawWin(Position p,int level){
+
+
+    public void drawWin(Position p,int level, Position pr){
         int realLevel=level-seed;
         p.setTile(Tileset.UNLOCKED_DOOR);
         ter.renderFrame(world);
         StdDraw.setPenColor(Color.white);
         Font font=new Font("Monaco", Font.BOLD, 30);
         StdDraw.setFont(font);
-        StdDraw.text(30,15,"You Win! Next level: "+ realLevel);
+        if (pr.equals(player) ) {
+            StdDraw.text(30, 15, "Great Job: You Win! Next level: " + realLevel);
+        }
+        else if (pr.equals(AI)){
+            StdDraw.text(30, 15, "Oops: The AI Wins! Next level: " + realLevel);
+        }
         StdDraw.show();
         StdDraw.pause(1000);
         genWorld(level);
     }
+
+
     public void drawLose(){
         StdDraw.setPenColor(Color.white);
         Font font=new Font("Monaco", Font.BOLD, 30);
         StdDraw.setFont(font);
-        StdDraw.text(30,15,"You Lose!");
+        StdDraw.text(30,15,"You Lose: Ran out of steps!");
         StdDraw.show();
     }
 
@@ -401,7 +297,8 @@ public class Game implements Serializable{
         StdDraw.setFont(smallFont);
         StdDraw.text(0.5, 0.45, "New Game(N)");
         StdDraw.text(0.5, 0.4, "Load Game(L)");
-        StdDraw.text(0.5, 0.35, "Game Rule(R)");
+//        StdDraw.text(0.5, 0.35, "Game Rule(R)");
+        StdDraw.text(0.5, 0.35, "Game Mode(M)");
         StdDraw.text(0.5, 0.30, "Quit(Q)");
         StdDraw.show();
     }
@@ -415,6 +312,7 @@ public class Game implements Serializable{
                 char nextKey = StdDraw.nextKeyTyped();
                 if (nextKey == 'N' || nextKey == 'n') {
                     StdDraw.textLeft(0.25, 0.25, "New game_ please enter a seed:");
+                    StdDraw.setPenColor(Color.yellow);
                     StdDraw.show();
                     StdDraw.pause(1000);
                 }
@@ -446,22 +344,32 @@ public class Game implements Serializable{
                         System.out.println("Couldn't load "+e.getMessage());
                     }
                 }
-                if(nextKey=='r'||nextKey=='R'){
+
+//                    StdDraw.text(0.5, 0.55, "(1) You'll play against an AI player.");
+//                    StdDraw.text(0.5, 0.5, "(2) Use 'AWSD' to control your direction in the maze. ");
+//                    StdDraw.text(0.5, 0.35, "(5) Once arriving at the exit, you must wait until another player" +
+//                            "get to the exit.");
+
+
+                if (nextKey=='m'||nextKey=='M'){
                     StdDraw.setCanvasSize(40 * 16, 40 * 16);
                     StdDraw.clear(Color.black);
-                    Font font = new Font("Monaco", Font.BOLD, 35);
-                    StdDraw.setFont(font);
                     StdDraw.setPenColor(Color.white);
-                    StdDraw.text(0.5, 0.7, "Game Rule:");
-                    Font smallFont = new Font("Monaco", Font.BOLD, 12);
-                    StdDraw.setFont(smallFont);
-                    StdDraw.text(0.5, 0.55, "(1) You'll play against an AI player, and the player " +
-                            "with the higher points wins.");
-                    StdDraw.text(0.5, 0.5, "(2) Use 'AWSD' to control your direction in the maze. ");
-                    StdDraw.text(0.5, 0.45, "(3) You earn 5 points when getting a coin");
-                    StdDraw.text(0.5, 0.40,  "(4) You get 3 points deducted when falling into the trap.");
-                    StdDraw.text(0.5, 0.35, "(5) Once arriving at the exit, you must wait until another player" +
+                    Font font = new Font("Monaco", Font.BOLD, 30);
+                    StdDraw.setFont(font);
+                    StdDraw.text(0.5, 0.75, "Basic Mode V.S Advanced Mode");
+                    Font smallFont2 = new Font("Monaco", Font.BOLD, 14);
+                    StdDraw.setFont(smallFont2);
+                    StdDraw.text(0.5, 0.50, "Basic Mode: The player who gets to the exit first wins.");
+                    StdDraw.text(0.5, 0.45, "Advanced Mode: The player who gets the higher points wins.");
+                    StdDraw.text(0.5, 0.40, "You earn 5 points when getting a coin.");
+                    StdDraw.text(0.5, 0.35,  "You get 3 points deducted when falling into the trap.");
+                    StdDraw.text(0.5, 0.30, "Once arriving at the exit, the player must wait until another player" +
                             "get to the exit.");
+                    StdDraw.setPenColor(Color.yellow);
+                    Font insFont = new Font("Monaco", Font.BOLD, 14);
+                    StdDraw.text(0.5, 0.25, "Type 'N' and the map you want to load and "+
+                            "enter 'S' to start.");
 
                 }
                 if(nextKey=='Q'||nextKey=='q'){
@@ -557,8 +465,4 @@ public class Game implements Serializable{
         ter.renderFrame(world);
     }
 
-//    public void randomPlayer() {
-//        moveRandom();
-//        ter.renderFrame(world);
-//    }
 }
