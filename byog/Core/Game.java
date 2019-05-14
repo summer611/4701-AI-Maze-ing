@@ -31,6 +31,8 @@ public class Game implements Serializable {
     int seed;
     int level = 1;
     TERenderer ter;
+    Set<Position> colloected = new HashSet<>();
+
 
     class Node {
         Position position;
@@ -45,9 +47,10 @@ public class Game implements Serializable {
         }
         int priority() {
             double distance = Math.abs(position.Px - door.Px) + Math.abs(position.Py - door.Py);
-//            if(this.position.Tile == Tileset.COIN){
-//                return 0;
-//            }
+            if(this.position.Tile == Tileset.COIN && !colloected.contains(position)){
+                colloected.add(position);
+                this.numSteps -= 10;
+            }
             return (int) (Math.pow(distance, 0.5) + numSteps);
         }
         List<Node> neighbors() {
@@ -68,60 +71,26 @@ public class Game implements Serializable {
     }
 
     public void findRoute(Boolean hard) {
-        List<Position> visited = new ArrayList<>();
+        Map<Position, Integer> visited = new HashMap<>();
         route = new LinkedList<>();
+        colloected = new HashSet<>();
         Node start = new Node(AI, null, 0, '0');
         Node pointer = start;
         PriorityQueue<Node> pq = new PriorityQueue<>((n1, n2) -> n1.priority() - n2.priority());
         while (!pointer.isExit()) {
             for (Node neighb : pointer.neighbors()) {
-                if ((pointer.prev == null || !pointer.prev.position.equals(neighb.position)) && !visited.contains(neighb.position)) {
+//                if (pointer.prev == null ||  !visited.containsKey(neighb.position) || visited.containsKey(neighb.position)
+//                        && visited.get(neighb.position) > neighb.numSteps) {
+                if (pointer.prev == null || visited.getOrDefault(neighb.position, Integer.MAX_VALUE) > neighb.numSteps) {
                     pq.add(neighb);
-                    visited.add(neighb.position);
+                    visited.put(neighb.position, neighb.numSteps);
+                    System.out.println(neighb.position+ " ," + neighb.numSteps);
                 }
             }
             pointer = pq.poll();
           //  System.out.println(pointer.numSteps + " " + pointer.move + " " + pointer.prev.numSteps);
         }
-        int i = 1;
         while (pointer != null) {
-           // System.out.println("step " + i++ + pointer.move);
-            for(Node neighb:pointer.neighbors()) {
-//                if()
-//                    break;
-                if (neighb.position.Tile == Tileset.COIN && pointer.position.Tile != Tileset.COIN) {
-                    char backMove;
-                    if (neighb.move == 'a') backMove = 'd';
-                    else if (neighb.move == 'd') backMove = 'a';
-                    else if (neighb.move == 's') backMove = 'w';
-                    else backMove = 's';
-                    route.add(backMove);
-                    System.out.println(neighb.move + " route changed");
-                    route.add(neighb.move);
-                }
-            }
-//            for(Node neighb:pointer.neighbors()) {
-//                char backMove1;
-//                if (neighb.move == 'a') backMove1 = 'd';
-//                else if (neighb.move == 'd') backMove1 = 'a';
-//                else if (neighb.move == 's') backMove1 = 'w';
-//                else backMove1 = 's';
-//                if(neighb.position.Tile == Tileset.COIN || neighb.position.Tile == Tileset.FLOOR) {
-//                    for (Node neighb2 : neighb.neighbors()) {
-//                        if (neighb2.position.Tile == Tileset.COIN) {
-//                            char backMove2;
-//                            if (neighb2.move == 'a') backMove2 = 'd';
-//                            else if (neighb2.move == 'd') backMove2 = 'a';
-//                            else if (neighb2.move == 's') backMove2 = 'w';
-//                            else backMove2 = 's';
-//                            route.add(backMove2);
-//                            route.add(backMove1);
-//                            route.add(neighb.move);
-//                            route.add(neighb2.move);
-//                        }
-//                    }
-//               }
-  //          }
             route.add(pointer.move);
             pointer = pointer.prev;
         }

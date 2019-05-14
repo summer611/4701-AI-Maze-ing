@@ -134,14 +134,7 @@ public class Position implements Serializable {
                 }
                 drawVerticalHallway(world, rm.position.Py - Py + 1);
                 return rm.position.Py-Py+1;
-            }/*elseif(Py>rm.position.Py+rm.height-1){
-                for(int i=rm.position.Py+rm.height;i<=Py;i++){
-                    if(world[Px][i].Tile==Tileset.FLOOR)
-                        return 0;
-                }
-                drawVerticalHallway(world,Py-rm.position.Py+1);
-                return 1;
-            }*/
+            }
         }
         return 0;
     }
@@ -155,14 +148,7 @@ public class Position implements Serializable {
                 }
                 drawHorizontalHallway(world, rm.position.Px - Px + 1);
                 return rm.position.Px - Px + 1;
-            }/*elseif(Px>rm.position.Px+rm.width-1){
-                for(int i=rm.position.Px+rm.width;i<=Px;i++){
-                    if(world[i][Py].Tile==Tileset.FLOOR)
-                        return 0;
-                }
-                drawHorizontalHallway(world,Px-rm.position.Px+1);
-                return 1;
-            }*/
+            }
         }
         return 0;
     }
@@ -295,6 +281,7 @@ public class Position implements Serializable {
             int y = random.nextInt(20);
             Position p = world[x][y];
             if (p.Tile == Tileset.FLOOR) {
+                System.out.println("coin at ("+ x+" ," + y +")");
                 p.setTile(Tileset.COIN);
                 coin--;
             }
@@ -308,7 +295,7 @@ public class Position implements Serializable {
                 p.setTile(Tileset.TRAP);
                 trap--;
             }
-            world[7][7].setTile(Tileset.COIN);
+          //  world[33][14].setTile(Tileset.COIN);
         }
     }
 }
