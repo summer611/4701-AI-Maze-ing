@@ -59,8 +59,6 @@ public class Position implements Serializable {
         }
     }
 
-
-
     public Position(int px,int py,TETile[][]world){
         Px=px;
         Py=py;
@@ -291,6 +289,26 @@ public class Position implements Serializable {
         }
         return null;
     }
-
-
+    public static void addCoinsTraps(Position[][]world,Random random, int coin, int trap) {
+        while(coin > 0){
+            int x = random.nextInt(40);
+            int y = random.nextInt(20);
+            Position p = world[x][y];
+            if (p.Tile == Tileset.FLOOR) {
+                p.setTile(Tileset.COIN);
+                coin--;
+            }
+        }
+        while(trap > 0){
+            int x = random.nextInt(40);
+            int y = random.nextInt(20);
+            Position p = world[x][y];
+            if (p.Tile == Tileset.FLOOR) {
+                System.out.println("trap at ("+ x+" ," + y +")");
+                p.setTile(Tileset.TRAP);
+                trap--;
+            }
+            world[7][7].setTile(Tileset.COIN);
+        }
+    }
 }
